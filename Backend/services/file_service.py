@@ -2,7 +2,7 @@ from pathlib import Path
 import shutil
 import uuid
 
-UPLOAD_DIR = Path("backend/uploads")
+UPLOAD_DIR = Path("Backend/uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 

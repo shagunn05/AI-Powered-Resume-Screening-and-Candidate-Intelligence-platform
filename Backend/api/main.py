@@ -5,6 +5,8 @@ from Backend.api.routes import candidate
 
 from Backend.database.database import Base, engine
 from Backend.api.routes import job
+from Backend.api.routes import matching
+
 
 # Create Database Tables
 Base.metadata.create_all(bind=engine)
@@ -16,6 +18,8 @@ app = FastAPI(
 )
 
 app.include_router(job.router)
+app.include_router(matching.router)
+
 
 # Upload API
 app.include_router(

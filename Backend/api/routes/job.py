@@ -10,11 +10,21 @@ from Backend.services.file_service import save_uploaded_file
 from Backend.parser.jd_parser import extract_text_from_jd
 from Backend.parser.jd_cleaner import clean_jd
 from Backend.parser.jd_information_extractor import extract_job_information
+from Backend.database.job_crud import get_all_jobs
 
 router = APIRouter(
     prefix="/job",
     tags=["Job Management"]
 )
+
+@router.get("/")
+def get_jobs(db: Session = Depends(get_db)):
+
+    jobs = get_all_jobs(db)
+
+    return {
+        "data": jobs
+    }
 
 
 @router.post("/upload")
@@ -63,3 +73,4 @@ async def upload_job(
         }
 
     }
+

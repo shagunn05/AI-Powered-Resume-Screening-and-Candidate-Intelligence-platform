@@ -10,52 +10,143 @@ st.set_page_config(
 )
 
 st.title("🎯 AI Interview Question Generator")
-st.caption("Generate AI-powered interview questions based on Resume & Job Description")
+st.caption("Generate 5 AI-powered interview questions based on Candidate Resume & Job Description")
 
 st.divider()
 
-candidate_response = requests.get(f"{API_URL}/candidate/")
 
-candidate_data = []
+# -------------------------------
+# Fetch Candidates
+# -------------------------------
 
-if candidate_response.status_code == 200:
-    candidate_data = candidate_response.json()["data"]
+try:
+    response = requests.get(f"{API_URL}/candidate/")
 
-job_response = requests.get(f"{API_URL}/job/")
+    if response.status_code == 200:
+        candidate_data = response.json()["data"]
+    else:
+        candidate_data = []
 
-job_data = []
-
-if job_response.status_code == 200:
-    job_data = job_response.json()["data"]
-
-candidate = st.selectbox(
-    "👤 Select Candidate",
-    candidate_data,
-    format_func=lambda x: x["name"]
-)
+except:
+    st.error("❌ Backend is not running.")
+    st.stop()
 
 
-job = st.selectbox(
-    "💼 Select Job",
-    job_data,
-    format_func=lambda x: x["job_title"]
-)
+# -------------------------------
+# Fetch Jobs
+# -------------------------------
 
-st.divider()
+try:
+
+    response = requests.get(f"{API_URL}/job/")
+
+    if response.status_code == 200:
+        job_data = response.json()["data"]
+
+    else:
+        job_data = []
+
+except:
+
+    st.error("Unable to fetch jobs.")
+    st.stop()
+
+
+if len(candidate_data) == 0:
+    st.warning("No Candidates Found")
+    st.stop()
+
+if len(job_data) == 0:
+    st.warning("No Jobs Found")
+    st.stop()
+
+
+# -------------------------------
+# Selection
+# -------------------------------
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.info(f"👤 Candidate : {candidate['name']}")
+
+    candidate = st.selectbox(
+        "👤 Select Candidate",
+        candidate_data,
+        format_func=lambda x: x["name"]
+    )
 
 with col2:
-    st.info(f"💼 Job : {job['job_title']}")
+
+    job = st.selectbox(
+        "💼 Select Job",
+        job_data,
+        format_func=lambda x: x["job_title"]
+    )
+
 
 st.divider()
 
-if st.button("🚀 Generate Interview Questions", use_container_width=True):
+# -------------------------------
+# Summary Cards
+# -------------------------------
 
-    with st.spinner("Generating AI Questions..."):
+left, right = st.columns(2)
+
+with left:
+
+    st.subheader("👤 Candidate Summary")
+
+    st.success(f"""
+**Name**
+
+{candidate['name']}
+
+**Email**
+
+{candidate['email']}
+
+**Phone**
+
+{candidate['phone']}
+
+**Skills**
+
+{candidate['skills']}
+""")
+
+
+with right:
+
+    st.subheader("💼 Job Summary")
+
+    st.info(f"""
+**Job Title**
+
+{job['job_title']}
+
+**Required Skills**
+
+{job['required_skills']}
+
+**Experience**
+
+{job['experience']}
+
+**Education**
+
+{job['education']}
+""")
+
+
+st.divider()
+
+# -------------------------------
+# Generate Button
+# -------------------------------
+
+if st.button("🚀 Generate AI Interview Questions", use_container_width=True):
+
+    with st.spinner("AI is generating interview questions..."):
 
         response = requests.get(
             f"{API_URL}/interview/{candidate['id']}/{job['id']}"
@@ -65,15 +156,21 @@ if st.button("🚀 Generate Interview Questions", use_container_width=True):
 
             result = response.json()
 
-            st.success("Questions Generated Successfully!")
+            st.success("✅ Interview Questions Generated")
 
-            st.subheader("📋 AI Interview Questions")
+            st.divider()
 
-            st.text_area(
-                "Questions",
+            st.subheader("📋 Top 5 Interview Questions")
+
+            st.markdown(result["questions"])
+
+            st.download_button(
+                "📥 Download Questions",
                 result["questions"],
-                height=450
+                file_name="Interview_Questions.txt",
+                mime="text/plain"
             )
 
         else:
+
             st.error(response.text)

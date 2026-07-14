@@ -18,14 +18,14 @@ router = APIRouter(
 )
 
 @router.get("/")
-def get_jobs(db: Session = Depends(get_db)):
+def fetch_all_jobs(db: Session = Depends(get_db)):
 
     jobs = get_all_jobs(db)
 
     return {
+        "total_jobs": len(jobs),
         "data": jobs
     }
-
 
 @router.post("/upload")
 async def upload_job(

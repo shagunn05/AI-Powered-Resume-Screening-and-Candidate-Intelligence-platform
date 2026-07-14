@@ -9,6 +9,7 @@ from Backend.api.routes import matching
 from Backend.api.routes import analysis
 from Backend.api.routes import interview
 
+from Backend.api.routes import recommendation
 
 # Create Database Tables
 Base.metadata.create_all(bind=engine)
@@ -23,6 +24,8 @@ app.include_router(job.router)
 app.include_router(matching.router)
 app.include_router(analysis.router)
 app.include_router(interview.router)
+app.include_router(recommendation.router)
+
 
 # Upload API
 app.include_router(

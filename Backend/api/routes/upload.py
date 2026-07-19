@@ -33,21 +33,39 @@ async def upload_resume(
         extension = Path(file.filename).suffix.lower()
 
         if extension == ".pdf":
-            raw_text = extract_text_from_pdf(file_path)
+             raw_text = extract_text_from_pdf(file_path)
         elif extension == ".docx":
-            raw_text = extract_text_from_docx(file_path)
+             raw_text = extract_text_from_docx(file_path)
         else:
             return {"error": "Unsupported file format"}
 
+        # Debug
+        print("RAW TEXT")
+        print(raw_text[:1000])
+
         clean_resume = clean_text(raw_text)
 
+        print("=" * 100)
+        print(clean_resume)
+        print("=" * 100)
+       
         candidate = extract_information(clean_resume)
 
+        print("=" * 60)
+        print("Extracted Candidate Data:")
+        print(candidate)
+        print("=" * 60)
+
         candidate["skills"] = extract_skills(clean_resume)
-        print("Candidate Data:", candidate)
+        print("Skills:", candidate["skills"])
 
         saved_candidate = create_candidate(db, candidate)
-        print("Saved Candidate:", saved_candidate)
+        print("=" * 60)
+        print("Saved Candidate")
+        print("ID:", saved_candidate.id)
+        print("Name:", saved_candidate.name)
+        print("Email:", saved_candidate.email)
+        print("=" * 60)
         return {
             "message": "Resume uploaded successfully",
             "candidate": {

@@ -2,47 +2,74 @@ import re
 
 
 def extract_information(text: str):
-    """
-    Extract candidate basic information from resume.
-    """
+    print("TEXT RECEIVED:")
+    print(text)
 
+    print("\nLINES:")
+    for i, line in enumerate(text.splitlines(), start=1):
+     print(i, repr(line))
+     
     # -------------------------
     # Email
     # -------------------------
-    email_pattern = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+    email_match = re.search(
+        r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
+        text
+    )
 
-    email = re.search(email_pattern, text)
-
-    email = email.group() if email else None
+    email = email_match.group(0) if email_match else None
 
     # -------------------------
-    # Phone Number
+    # Phone
     # -------------------------
-    phone_pattern = r"(\+91[-\s]?)?[6-9]\d{9}"
+    phone_match = re.search(
+        r"(\+91[\-\s]?)?[6-9]\d{9}",
+        text
+    )
 
-    phone = re.search(phone_pattern, text)
-
-    phone = phone.group() if phone else None
+    phone = phone_match.group(0) if phone_match else None
 
     # -------------------------
     # Name
-    # (Simple Approach)
     # -------------------------
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
 
-    lines = text.split("\n")
+    name = "Not Found"
 
-    name = "not found"
+    ignore = [
+        "resume",
+        "summary",
+        "experience",
+        "education",
+        "skills",
+        "projects",
+        "certifications",
+        "technical skills",
+        "contact",
+        "email",
+        "phone",
+        "linkedin",
+        "github"
+    ]
 
     for line in lines:
-        line = line.strip()
 
-        if len(line.split()) >= .2 and len(line.split()) <= 4:
-            name = line
+        lower = line.lower()
+
+        if any(word in lower for word in ignore):
+            continue
+
+        if "@" in line:
             break
 
-    
-        else:
-             name = "Not Found"
+        if re.search(r"\d", line):
+            continue
+
+        words = line.split()
+
+        if 2 <= len(words) <= 4:
+            name = line
+            break
 
     return {
         "name": name,

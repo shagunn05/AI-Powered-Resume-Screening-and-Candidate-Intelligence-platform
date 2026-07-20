@@ -95,6 +95,8 @@ TalentPilot AI is an AI-powered recruitment platform that automates resume scree
 - ✅ Hiring Recommendation
 - 🏆 Candidate Ranking
 - 📊 Recruiter Analytics
+- 🐳 Dockerized Backend & Frontend
+- ⚡ Multi-container Application using Docker Compose
 
 ---
 
@@ -118,6 +120,10 @@ TalentPilot AI is an AI-powered recruitment platform that automates resume scree
 - Mistral AI
 - Python
 
+### DevOps
+- Docker
+- Docker Compose
+
 ---
 
 # 📂 Project Structure
@@ -126,10 +132,18 @@ TalentPilot AI is an AI-powered recruitment platform that automates resume scree
 TalentPilot-AI
 │
 ├── Backend
+│   ├── Dockerfile
+│   └── ...
+│
 ├── Frontend
+│   ├── Dockerfile
+│   └── ...
+│
 ├── assets
 ├── Uploads
 ├── Vector-Db
+├── docker-compose.yml
+├── .dockerignore
 ├── README.md
 ├── LICENSE
 ```
@@ -138,29 +152,65 @@ TalentPilot-AI
 
 # 🚀 Installation
 
-Clone the repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/shagunn05/AI-Powered-Resume-Screening-and-Candidate-Intelligence-platform.git
 ```
 
-Install dependencies
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run Backend
+### Run Backend
 
 ```bash
 uvicorn Backend.api.main:app --reload
 ```
 
-Run Frontend
+### Run Frontend
 
 ```bash
 streamlit run Frontend/app.py
 ```
+
+---
+
+# 🐳 Run with Docker
+
+### Build and Start All Containers
+
+```bash
+docker compose up --build
+```
+
+### Run in Detached Mode
+
+```bash
+docker compose up -d
+```
+
+### Stop Containers
+
+```bash
+docker compose down
+```
+
+### View Running Containers
+
+```bash
+docker ps
+```
+
+### Services
+
+| Service | Port |
+|----------|------|
+| FastAPI Backend | 8000 |
+| Streamlit Frontend | 8501 |
+| PostgreSQL | 5432 |
 
 ---
 

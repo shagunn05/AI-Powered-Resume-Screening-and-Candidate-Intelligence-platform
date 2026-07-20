@@ -5,7 +5,7 @@ import requests
 # Configuration
 # ==========================================
 
-API_BASE_URL = "http://127.0.0.1:8000/upload/resume"
+API_BASE_URL = "http://127.0.0.1:8000"
 
 st.set_page_config(
     page_title="Resume Upload",
@@ -53,7 +53,7 @@ if uploaded_file is not None:
             with st.spinner("Uploading Resume..."):
 
                 response = requests.post(
-                    API_BASE_URL,
+                    f"{API_BASE_URL}/upload/resume",
                     files=files,
                     timeout=30
                 )
